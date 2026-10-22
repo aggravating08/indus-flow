@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Indus Flow — Autonomous Supply Chain Resilience Agent</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Top Navigation Header -->
+  <header class="app-header">
+    <div class="brand">
+      <div class="logo-badge">⚡</div>
+      <div>
+        <h1>Indus Flow</h1>
+        <span class="subtext">Autonomous Supply Chain Resilience Agent &bull; Team Indus</span>
+      </div>
+    </div>
+    
+    <div class="header-badges">
+      <div class="sponsor-pill" id="badge-meterless">
+        <span class="dot live"></span> Meterless: <span id="meterless-mode">World Model</span>
+      </div>
+      <div class="sponsor-pill" id="badge-nvidia">
+        <span class="dot live"></span> NVIDIA NIM: <span id="nvidia-mode">Llama-3.1-70B</span>
+      </div>
+      <div class="sponsor-pill" id="badge-zetaris">
+        <span class="dot live"></span> Zetaris: <span id="zetaris-mode">Semantic Catalog</span>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn btn-secondary" id="btn-reset" title="Reset state to initial seeds">↺ Reset Demo</button>
+      <button class="btn btn-primary" id="btn-run-agent">▶ Run Autonomous Cycle</button>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="dashboard-container">
+    
+    <!-- KPI Summary Grid -->
+    <section class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">SKUs Tracked</div>
+        <div class="kpi-value" id="kpi-skus">5</div>
+        <div class="kpi-footer text-muted">Across 3 tiers</div>
+      </div>
+      <div class="kpi-card alert-card">
+        <div class="kpi-label">Critical Stock Alerts</div>
+        <div class="kpi-value text-danger" id="kpi-critical">2</div>
+        <div class="kpi-footer text-danger" id="kpi-critical-sub">Buffer breach imminent</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Active Shipments</div>
+        <div class="kpi-value" id="kpi-shipments">4</div>
+        <div class="kpi-footer text-warning" id="kpi-shipments-sub">2 delayed at port</div>
+      </div>
+      <div class="kpi-card highlight-card">
+        <div class="kpi-label">Pending Human Approvals</div>
+        <div class="kpi-value text-accent" id="kpi-approvals">0</div>
+        <div class="kpi-footer text-accent">Consequential actions gated</div>
+      </div>
+    </section>
+
+    <!-- Disruption Alerts Banner -->
+    <section class="panel alert-panel" id="disruption-banner-container">
+      <div class="panel-header">
+        <div class="panel-title">
+          <span class="status-indicator-pulse"></span> Active Supply Chain Disruption Alerts
+        </div>
+        <span class="badge badge-danger" id="alerts-count-badge">0 Alerts</span>
+      </div>
+      <div class="alerts-list" id="alerts-list">
+        <div class="empty-state">No active disruptions detected. Click "Run Autonomous Cycle" to scan telemetry.</div>
+      </div>
+    </section>
+
+    <!-- Split Screen: Decision & Simulation Workbench -->
+    <div class="workbench-grid">
+      
+      <!-- Left Panel: AI Decision & Human Approval Console -->
+      <section class="panel">
+        <div class="panel-header">
+          <div class="panel-title">🛡️ AI Resilience Decision & Human Approval Console</div>
+          <span class="badge badge-info" id="decision-status-badge">Awaiting Cycle</span>
+        </div>
+        
+        <div class="panel-body" id="decision-content">
+          <div class="empty-state">Trigger the agent cycle to generate Meterless-simulated decision policies.</div>
+        </div>
+      </section>
+
+      <!-- Right Panel: Meterless World Model Simulation Workbench -->
+      <section class="panel">
+        <div class="panel-header">
+          <div class="panel-title">🌐 Meterless World Model &bull; Counterfactual Simulations</div>
+          <div class="simulation-controls">
+            <label for="sim-horizon">Horizon:</label>
+            <select id="sim-horizon" class="select-input">
+              <option value="5">5 Days</option>
+              <option value="7" selected>7 Days</option>
+              <option value="10">10 Days</option>
+              <option value="14">14 Days</option>
+            </select>
+            <button class="btn btn-sm btn-outline" id="btn-re-simulate">Re-Simulate</button>
+          </div>
+        </div>
+        
+        <div class="panel-body" id="simulation-content">
+          <div class="empty-state">Simulation branches will appear here after running the resilience cycle.</div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Data Tables & Observability Section -->
+    <section class="panel tabbed-panel">
+      <div class="panel-header tab-header">
+        <div class="tab-buttons">
+          <button class="tab-btn active" data-tab="tab-inventory">📦 Inventory Telemetry</button>
+          <button class="tab-btn" data-tab="tab-shipments">🚢 In-Transit Shipments</button>
+          <button class="tab-btn" data-tab="tab-suppliers">🏭 Supplier Directory</button>
+          <button class="tab-btn" data-tab="tab-history">📜 Decision History & Audit Trail</button>
+        </div>
+        <span class="text-muted text-sm" id="table-timestamp">Updated just now</span>
+      </div>
+
+      <div class="panel-body">
+        <!-- Tab 1: Inventory -->
+        <div class="tab-content active" id="tab-inventory">
+          <div class="table-responsive">
+            <table class="data-table" id="inventory-table">
+              <thead>
+                <tr>
+                  <th>SKU</th>
+                  <th>Item Name</th>
+                  <th>Category</th>
+                  <th>Current Stock</th>
+                  <th>Safety Stock</th>
+                  <th>Burn Rate</th>
+                  <th>Days Supply</th>
+                  <th>Criticality</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tab 2: Shipments -->
+        <div class="tab-content" id="tab-shipments">
+          <div class="table-responsive">
+            <table class="data-table" id="shipments-table">
+              <thead>
+                <tr>
+                  <th>Tracking ID</th>
+                  <th>SKU</th>
+                  <th>Carrier</th>
+                  <th>Route</th>
+                  <th>Units</th>
+                  <th>Delay Days</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tab 3: Suppliers -->
+        <div class="tab-content" id="tab-suppliers">
+          <div class="table-responsive">
+            <table class="data-table" id="suppliers-table">
+              <thead>
+                <tr>
+                  <th>Supplier ID</th>
+                  <th>Company Name</th>
+                  <th>Country</th>
+                  <th>Tier</th>
+                  <th>Reliability</th>
+                  <th>Lead Time</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tab 4: Audit & Decision History -->
+        <div class="tab-content" id="tab-history">
+          <div class="history-feed" id="history-feed"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modal for Human Approval / Rejection -->
+  <div class="modal-backdrop" id="approval-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="modal-title">Confirm Mitigation Action</h3>
+        <button class="modal-close" id="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="modal-description">You are about to approve this mitigation action for immediate operational execution.</p>
+        <div class="form-group">
+          <label for="operator-name">Approver / Operator Identity:</label>
+          <input type="text" id="operator-name" class="input-text" value="Asiya Ali (Operations Lead)">
+        </div>
+        <div class="form-group">
+          <label for="operator-notes">Operational Notes / Reason:</label>
+          <textarea id="operator-notes" class="input-textarea" rows="3" placeholder="Enter notes or justification..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="modal-btn-cancel">Cancel</button>
+        <button class="btn btn-primary" id="modal-btn-confirm">Confirm Action</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <div><strong>Indus Flow</strong> &bull; Open Agent Hackathon 2026 Submission</div>
+    <div class="footer-links">
+      <span>Built with Meterless World Model Engine, NVIDIA NIM, Zetaris Semantic Catalog, FastAPI &amp; Docker</span>
+    </div>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
