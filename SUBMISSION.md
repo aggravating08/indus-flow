@@ -7,7 +7,7 @@
 
 ## 1. Project Information
 * **Tagline:** Predictive, counterfactual supply chain resilience powered by Meterless World Model, Zetaris, and NVIDIA NIM.
-* **Repository URL:** `https://github.com/Indus-Team/indus-flow` *(Local workspace ready for push)*
+* **Repository URL:** `https://github.com/aggravating08/indus-flow`
 * **Demo Video URL:** *[To be recorded using DEMO_SCRIPT.md]*
 * **Live Deployment URL:** `http://localhost:8000` *(Local verified / Docker ready for cloud hosting)*
 
